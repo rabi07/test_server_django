@@ -20,14 +20,14 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       with:
-        region: ap-south-1
+        region: ap-south-1  # Specify the AWS region
 
     - name: Build and push Docker image
       id: build-image
       run: |
         IMAGE_TAG=${GITHUB_SHA}
-        docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG} .
-        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG}
+        docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG} .
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG}
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         AWS_REGION: ap-south-1
@@ -44,11 +44,12 @@ jobs:
       run: |
         IMAGE_TAG=${GITHUB_SHA}
         ssh -o StrictHostKeyChecking=no -i "${{ secrets.EC2_SSH_KEY }}" ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG}
+          docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG}
           docker stop my-app || true
           docker rm my-app || true
-          docker run -d -p 8000:8000 --name my-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG}
+          docker run -d -p 8000:8000 --name my-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${IMAGE_TAG}
         EOF
+
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         AWS_REGION: ap-south-1
