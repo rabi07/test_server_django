@@ -61,20 +61,12 @@ jobs:
         IMAGE_TAG=${GITHUB_SHA}
         IMAGE_URI=577793742906.dkr.ecr.ap-south-1.amazonaws.com/my-app
         ssh -o StrictHostKeyChecking=no -i "ec2_key.pem" ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << EOF
-          # Set up AWS CLI and ECR login on the EC2 instance
-          aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
-          aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
-          aws configure set region ap-south-1
-          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $IMAGE_URI
-
-          # Pull the Docker image
           docker pull $IMAGE_URI:${IMAGE_TAG}
-
-          # Manage the Docker container
           docker stop my-app || true
           docker rm my-app || true
           docker run -d -p 8000:8000 --name my-app $IMAGE_URI:${IMAGE_TAG}
         EOF
+
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         AWS_REGION: ap-south-1
