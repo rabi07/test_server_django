@@ -28,7 +28,7 @@ jobs:
       id: build-image
       run: |
         IMAGE_TAG=${GITHUB_SHA}
-        IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
+        IMAGE_URI=577793742906.dkr.ecr.ap-south-1.amazonaws.com/my-app
         docker build -t $IMAGE_URI:${IMAGE_TAG} .
         docker push $IMAGE_URI:${IMAGE_TAG}
       env:
@@ -55,7 +55,7 @@ jobs:
     - name: Deploy to Kubernetes
       run: |
         IMAGE_TAG=${GITHUB_SHA}
-        IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
+        IMAGE_URI=577793742906.dkr.ecr.ap-south-1.amazonaws.com/my-app
         
         # Create Kubernetes deployment YAML
         cat <<EOF > deployment.yaml
