@@ -54,7 +54,7 @@ jobs:
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
       with:
-        version: 'v1.21.0'  # Specify the version of kubectl you need
+        version: 'v1.30.1'  # Specify the version of kubectl you need
 
     - name: Configure kubectl
       run: |
@@ -84,33 +84,3 @@ jobs:
             spec:
               containers:
               - name: my-app
-                image: $IMAGE_URI:${IMAGE_TAG}
-                ports:
-                - containerPort: 8000
-        EOF
-
-        # Apply the deployment to the cluster
-        kubectl apply -f deployment.yaml
-
-        # Expose the deployment as a service
-        cat <<EOF > service.yaml
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: my-app-service
-        spec:
-          selector:
-            app: my-app
-          ports:
-            - protocol: TCP
-              port: 80
-              targetPort: 8000
-        EOF
-
-        kubectl apply -f service.yaml
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        AWS_REGION: ap-south-1
-        IMAGE_TAG: ${{ github.sha }}
