@@ -85,9 +85,12 @@ jobs:
             spec:
               containers:
               - name: my-app
-                image: $IMAGE_URI:${IMAGE_TAG}
+                image: 577793742906.dkr.ecr.ap-south-1.amazonaws.com/my-app:${IMAGE_TAG}
                 ports:
                 - containerPort: 8000
+              imagePullSecrets:
+              - name: ecr-registry
+
         EOF
 
         # Apply the deployment to the cluster
